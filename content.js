@@ -1,15 +1,23 @@
-function getArticleText() {
-  const article = document.querySelector("article");
-  if (article) return article.innerText;
-
-  // fallback
-  const paragraphs = Array.from(document.querySelectorAll("p"));
-  return paragraphs.map((p) => p.innerText).join("\n");
+// Content script used by the demo to read page info
+function getSelectionOrPage() {
+  const selection = window.getSelection()?.toString()?.trim();
+  const title = document.title || location.hostname;
+  if (selection) {
+    return { title, snippet: selection, wordCount: countWords(selection), source: "selection" };
+  }
+  const main = document.querySelector("article") || document.querySelector("main") || document.body;
+  const text = (main?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 2000);
+  return { title, snippet: text, wordCount: countWords(text), source: "page" };
 }
 
-chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
-  if (req.type === "GET_ARTICLE_TEXT") {
-    const text = getArticleText();
-    sendResponse({ text });
+function countWords(s) {
+  if (!s) return 0;
+  return (s.match(/[^\s]+/g) || []).length;
+}
+
+chrome.runtime.onMessage.addListener((req, _sender, sendResponse) => {
+  if (req.type === "GET_PAGE_INFO") {
+    const info = getSelectionOrPage();
+    sendResponse(info);
   }
 });

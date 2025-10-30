@@ -1,15 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "AI Summary for Articles",
-  "version": "1.0",
-  "permissions": ["scripting", "activeTab", "storage"],
+  "name": "Quick Demo Extension (QDE)",
+  "description": "A tiny Chrome extension demo: shows page info, lets you set a real‑time status, and (optionally) connects to a simple backend.",
+  "version": "1.1.0",
+  "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["http://*/*", "https://*/*"],
       "js": ["content.js"]
     }
   ],
@@ -17,5 +18,5 @@
     "service_worker": "background.js"
   },
   "options_page": "options.html",
-  "host_permissions": ["<all_urls>"]
+  "host_permissions": ["http://*/*", "https://*/*"]
 }

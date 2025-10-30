@@ -1,68 +1,62 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>AI Summary Settings</title>
+    <meta charset="utf-8" />
+    <title>Quick Demo Extension — Settings</title>
     <style>
+      :root { --accent: #2563eb; --border:#e2e8f0; --muted:#64748b; }
       body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        max-width: 600px;
-        margin: 0 auto;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        padding: 24px; max-width: 720px; margin: 0 auto;
       }
-      h1 {
-        color: #4285f4;
-      }
-      .form-group {
-        margin-bottom: 20px;
-      }
-      label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-      }
+      h1 { font-size: 22px; margin: 0 0 6px; }
+      p.lead { color: var(--muted); margin-top: 0; }
+      .field { margin: 14px 0 18px; }
+      label { display:block; font-weight:600; margin-bottom:6px; }
       input[type="text"] {
-        width: 100%;
-        padding: 8px;
-        box-sizing: border-box;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        width: 100%; padding: 10px 12px; border:1px solid var(--border); border-radius: 10px;
+        outline: none; font-size: 14px;
       }
-      button {
-        background-color: #4285f4;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #3367d6;
-      }
-      .success-message {
-        color: green;
-        margin-top: 10px;
-        display: none;
-      }
+      input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+      .row { display:flex; align-items:center; gap:10px; }
+      button { background: var(--accent); color:white; border:none; padding:10px 14px; border-radius: 10px; font-weight:600; cursor:pointer; }
+      button:disabled { opacity:.6; }
+      .note { color: var(--muted); font-size: 13px; }
+      .ok { color: #16a34a; }
+      .hr { height:1px; background: var(--border); margin:20px 0; }
+      code { background:#f8fafc; border:1px solid var(--border); padding:3px 6px; border-radius:6px; }
     </style>
   </head>
   <body>
-    <h1>AI Summary Settings</h1>
+    <h1>Quick Demo Extension</h1>
+    <p class="lead">Fill these to personalize the demo and (optionally) hook up a tiny backend.</p>
 
-    <div class="form-group">
-      <label for="api-key">Gemini API Key:</label>
-      <input type="text" id="api-key" placeholder="Enter your Gemini API key" />
-      <p>
-        You can get an API key from
-        <a href="https://makersuite.google.com/app/apikey" target="_blank"
-          >Google AI Studio</a
-        >
-      </p>
+    <div class="field">
+      <label for="displayName">Display name</label>
+      <input id="displayName" type="text" placeholder="e.g., Sam Dev" />
+      <div class="note">Used when sending messages to the backend.</div>
     </div>
 
-    <button id="save-button">Save Settings</button>
-    <p id="success-message" class="success-message">
-      Settings saved successfully!
-    </p>
+    <div class="field">
+      <label for="backendUrl">WebSocket backend URL (optional)</label>
+      <input id="backendUrl" type="text" placeholder="ws://localhost:3000" />
+      <div class="note">Point this to any WebSocket server that echoes JSON. We send <code>{type:'hello'}</code>, <code>{type:'status'}</code>, and your <code>ping</code>s.
+      If you leave it blank, the extension still works without a server.</div>
+    </div>
+
+    <div class="row">
+      <button id="save">Save</button>
+      <span id="saved" class="note"></span>
+    </div>
+
+    <div class="hr"></div>
+
+    <p class="note">Want a quick backend? Run this in a terminal:</p>
+    <pre class="note"><code>
+# Node:
+# npm i ws
+# node -e "new (require('ws').Server)({port:3000}).on('connection',s=>s.on('message',m=>s.clients.forEach(c=>c.send(m))))"
+    </code></pre>
 
     <script src="options.js"></script>
   </body>
